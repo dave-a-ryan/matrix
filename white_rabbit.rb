@@ -1,48 +1,51 @@
 require "tty-table"
 
+#these are the pools the characters can pull from
 $big_chars = ("A".."Z").to_a + ("0".."9").to_a + %w( # $ % & ) + %w(九 七 二 人 入 八 力 十 下 三 千 上 口 土 夕 大 女 子 小 山 川 五 天 中 六 円 手)
 $med_chars = %w(; < > * ! ? { } : - _ + =)
 $sml_chars = %w(. , ` ' " ^ ~)
 
-row1 = [" ", " ", " ", " ", " ", " ", " ", " "]
-row2 = [" ", " ", " ", " ", " ", " ", " ", " "]
-row3 = [" ", " ", " ", " ", " ", " ", " ", " "]
-row4 = [" ", " ", " ", " ", " ", " ", " ", " "]
-row5 = [" ", " ", " ", " ", " ", " ", " ", " "]
-row6 = [" ", " ", " ", " ", " ", " ", " ", " "]
-row7 = [" ", " ", " ", " ", " ", " ", " ", " "]
-row8 = [" ", " ", " ", " ", " ", " ", " ", " "]
-row9 = [" ", " ", " ", " ", " ", " ", " ", " "]
-row10 = [" ", " ", " ", " ", " ", " ", " ", " "]
-row11 = [" ", " ", " ", " ", " ", " ", " ", " "]
-row12 = [" ", " ", " ", " ", " ", " ", " ", " "]
-row13 = [" ", " ", " ", " ", " ", " ", " ", " "]
-row14 = [" ", " ", " ", " ", " ", " ", " ", " "]
-row15 = [" ", " ", " ", " ", " ", " ", " ", " "]
-row16 = [" ", " ", " ", " ", " ", " ", " ", " "]
+$rows = [
+  row1 = [" ", " ", " ", " ", " ", " ", " ", " "],
+  row2 = [" ", " ", " ", " ", " ", " ", " ", " "],
+  row3 = [" ", " ", " ", " ", " ", " ", " ", " "],
+  row4 = [" ", " ", " ", " ", " ", " ", " ", " "],
+  row5 = [" ", " ", " ", " ", " ", " ", " ", " "],
+  row6 = [" ", " ", " ", " ", " ", " ", " ", " "],
+  row7 = [" ", " ", " ", " ", " ", " ", " ", " "],
+  row8 = [" ", " ", " ", " ", " ", " ", " ", " "],
+  row9 = [" ", " ", " ", " ", " ", " ", " ", " "],
+  row10 = [" ", " ", " ", " ", " ", " ", " ", " "],
+  row11 = [" ", " ", " ", " ", " ", " ", " ", " "],
+  row12 = [" ", " ", " ", " ", " ", " ", " ", " "],
+  row13 = [" ", " ", " ", " ", " ", " ", " ", " "],
+  row14 = [" ", " ", " ", " ", " ", " ", " ", " "],
+  row15 = [" ", " ", " ", " ", " ", " ", " ", " "],
+  row16 = [" ", " ", " ", " ", " ", " ", " ", " "],
+]
 
-header = ["1", "2", "h3", "h4", "h5", "h6", "h7", "h8"]
-header = %w(h e l l o nn ee oo)
-# header = [" ", " ", " ", " ", " ", " ", " ", " "]
-p header
-$rows = [row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, row12, row13, row14, row15, row16]
+#this is a way to have multiple snakes starting and stopping at different times
 $lives = [36, 40, 46, 48, 54, 60]
 
-column_picker = [0, 1, 2, 3, 4, 5, 6, 7]
-snake1 = { row: rand(6..15), column: rand(0..7), life: $lives.sample }
-snake2 = { row: rand(6..15), column: rand(0..7), life: $lives.sample }
-snake3 = { row: rand(6..15), column: rand(0..7), life: $lives.sample }
-snake4 = { row: rand(6..15), column: rand(0..7), life: $lives.sample }
-snake5 = { row: rand(6..15), column: rand(0..7), life: $lives.sample }
-snake6 = { row: rand(6..15), column: rand(0..7), life: $lives.sample }
-snake7 = { row: rand(6..15), column: rand(0..7), life: $lives.sample }
+#these are the matrix code thingies
+snakes = [
+  snake1 = { row: rand(6..15), column: rand(0..7), life: $lives.sample },
+  snake2 = { row: rand(6..15), column: rand(0..7), life: $lives.sample },
+  snake3 = { row: rand(6..15), column: rand(0..7), life: $lives.sample },
+  snake4 = { row: rand(6..15), column: rand(0..7), life: $lives.sample },
+  snake5 = { row: rand(6..15), column: rand(0..7), life: $lives.sample },
+  snake6 = { row: rand(6..15), column: rand(0..7), life: $lives.sample },
+  snake7 = { row: rand(6..15), column: rand(0..7), life: $lives.sample },
+]
 
+#green-ify's the text
 class String
   def green
     "\e[32m#{self}\e[0m"
   end
 end
 
+#method for changing the characters on screen
 def matrix(snake)
   #resets the snake after it dies
   if snake[:life] == -2
@@ -110,17 +113,11 @@ def matrix(snake)
   snake[:life] -= 1
 end
 
+#this is the main loop, which runs forever
 while true
-  matrix(snake1)
-  matrix(snake2)
-  matrix(snake3)
-  matrix(snake4)
-  matrix(snake5)
-  matrix(snake6)
-  matrix(snake7)
+  snakes.each { |snake| matrix(snake) }
   system("clear")
   table = TTY::Table.new(rows: $rows)
   puts table.render(:basic, column_widths: 2, alignment: [:center])
-
   sleep(0.05)
 end
