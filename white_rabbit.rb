@@ -95,7 +95,7 @@ def matrix(snake)
     $rows[snake[:row]][snake[:column]] = $code.sample if $rows[snake[:row]] != nil || do_nothing()
     $rows[snake[:row] - 1][snake[:column]] = $rows[snake[:row] - 1][snake[:column]].bright_green if $rows[snake[:row] - 1] != nil || do_nothing()
     $rows[snake[:row] - 13][snake[:column]] = $rows[snake[:row] - 13][snake[:column]].green if $rows[snake[:row] - 13] != nil || do_nothing()
-    $rows[snake[:row] - 2][snake[:column]] = $code.sample.bright_green if $rows[snake[:row] - 2] != nil || do_nothing()
+    $rows[snake[:row] - 5][snake[:column]] = $code.sample.bright_green if $rows[snake[:row] - 5] != nil || do_nothing()
 
     #darken the old code
   elsif snake[:row] > 12
