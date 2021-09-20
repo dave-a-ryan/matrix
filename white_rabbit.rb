@@ -81,8 +81,10 @@ def matrix(snake)
     $rows[snake[:row]][snake[:column]] = $code.sample if $rows[snake[:row]] != nil || do_nothing()
     $rows[snake[:row] - 13][snake[:column]] = $rows[snake[:row] - 13][snake[:column]].green if $rows[snake[:row] - 13] != nil || do_nothing()
     $rows[snake[:row] - 23][snake[:column]] = " " if $rows[snake[:row] - 23] != nil || do_nothing()
-    $columns << snake[:occupied_column]
-
+    unless snake[:occupied_column] == nil
+      $columns << snake[:occupied_column]
+      snake[:occupied_column] = nil
+    end
     #random glitch
   elsif snake[:row] == 16
     $rows[snake[:row]][snake[:column]] = $code.sample if $rows[snake[:row]] != nil || do_nothing()
@@ -106,7 +108,7 @@ def matrix(snake)
     $rows[snake[:row]][snake[:column]] = $code.sample
     $rows[snake[:row] - 1][snake[:column]] = $rows[snake[:row] - 1][snake[:column]].bright_green
   end
-  #sets the new row to one more down, before the next loop
+  #sets the new row to one more down, before the new loop
   snake[:row] += 1
 end
 
