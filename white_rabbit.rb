@@ -30,26 +30,27 @@ $rows = [
 $rows = [row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, row12, row13, row14, row15, row16, row17, row18, row19, row20]
 
 #this is just a way to make the code snakes spawn at different intervals
-$snake_metering = [0, -1, -2, -3]
+
+$columns = Array.new(15, 0).map.with_index { |number, index| number + index }
+$column_test = 0
 
 #these are the matrix code thingies
 snakes = [
-  snake1 = { row: $snake_metering.sample, column: rand(0..14) },
-  snake2 = { row: $snake_metering.sample, column: rand(0..14) },
-  snake3 = { row: $snake_metering.sample, column: rand(0..14) },
-  snake4 = { row: $snake_metering.sample - 3, column: rand(0..14) },
-  snake5 = { row: $snake_metering.sample - 3, column: rand(0..14) },
-  snake6 = { row: $snake_metering.sample - 3, column: rand(0..14) },
-  snake7 = { row: $snake_metering.sample - 7, column: rand(0..14) },
-  snake8 = { row: $snake_metering.sample - 7, column: rand(0..14) },
-  snake9 = { row: $snake_metering.sample - 7, column: rand(0..14) },
-  snake10 = { row: $snake_metering.sample - 14, column: rand(0..14) },
-  snake11 = { row: $snake_metering.sample - 14, column: rand(0..14) },
-  snake12 = { row: $snake_metering.sample - 14, column: rand(0..14) },
-  snake13 = { row: $snake_metering.sample - 21, column: rand(0..14) },
-  snake14 = { row: $snake_metering.sample - 21, column: rand(0..14) },
-  snake15 = { row: $snake_metering.sample - 21, column: rand(0..14) },
+  snake1 = { row: 0, column: $columns.delete($columns.sample) },
+  snake2 = { row: 0 - 3, column: $columns.delete($columns.sample) },
+  snake3 = { row: 0 - 6, column: $columns.delete($columns.sample) },
+  snake4 = { row: 0 - 9, column: $columns.delete($columns.sample) },
+  snake5 = { row: 0 - 14, column: $columns.delete($columns.sample) },
+  snake7 = { row: 0 - 17, column: $columns.delete($columns.sample) },
+  snake8 = { row: 0 - 19, column: $columns.delete($columns.sample) },
+  snake9 = { row: 0 - 21, column: $columns.delete($columns.sample) },
+  snake10 = { row: 0 - 23, column: $columns.delete($columns.sample) },
+  snake11 = { row: 0 - 26, column: $columns.delete($columns.sample) },
+  snake12 = { row: 0 - 29, column: $columns.delete($columns.sample) },
+  snake12 = { row: 0 - 34, column: $columns.delete($columns.sample) },
 ]
+
+snakes.each { |snake| snake[:occupied_column] = snake[:column] }
 
 #green-ify's the text
 class String
@@ -62,49 +63,50 @@ class String
   end
 end
 
+def do_nothing
+end
+
 #this is the code generation method. It's pretty janky because of all the nil checks..
 def matrix(snake)
 
-  #glitch effect
-  # glitch = rand(10..18)
-  # if snake[:row] == glitch
-  #   $rows[snake[:row]][snake[:column]] = "TEST"
-  # end
-
   #resets the snake up to the top
   if snake[:row] == 47
-    snake[:row] = $snake_metering.sample
-    snake[:column] = rand(0..14)
+    snake[:row] = 0
 
-    #delete old code
+    snake[:column] = $columns.delete($columns.sample)
+    snake[:occupied_column] = snake[:column]
+
+    #delete old code, and allows the column to be ripe for another snake
   elsif snake[:row] > 22
-    unless $rows[snake[:row]] == nil
-      $rows[snake[:row]][snake[:column]] = $code.sample
-    end
-    unless $rows[snake[:row] - 13] == nil
-      $rows[snake[:row] - 13][snake[:column]] = $rows[snake[:row] - 13][snake[:column]].green
-    end
-    unless $rows[snake[:row] - 23] == nil
-      $rows[snake[:row] - 23][snake[:column]] = " "
-    end
+    $rows[snake[:row]][snake[:column]] = $code.sample if $rows[snake[:row]] != nil || do_nothing()
+    $rows[snake[:row] - 13][snake[:column]] = $rows[snake[:row] - 13][snake[:column]].green if $rows[snake[:row] - 13] != nil || do_nothing()
+    $rows[snake[:row] - 23][snake[:column]] = " " if $rows[snake[:row] - 23] != nil || do_nothing()
+    $columns << snake[:occupied_column]
+
+    #random glitch
+  elsif snake[:row] == 16
+    $rows[snake[:row]][snake[:column]] = $code.sample if $rows[snake[:row]] != nil || do_nothing()
+    $rows[snake[:row] - 1][snake[:column]] = $rows[snake[:row] - 1][snake[:column]].bright_green if $rows[snake[:row] - 1] != nil || do_nothing()
+    $rows[snake[:row] - 13][snake[:column]] = $rows[snake[:row] - 13][snake[:column]].green if $rows[snake[:row] - 13] != nil || do_nothing()
+    $rows[snake[:row] - 8][snake[:column]] = $code.sample.bright_green if $rows[snake[:row] - 8] != nil || do_nothing()
+  elsif snake[:row] == 19
+    $rows[snake[:row]][snake[:column]] = $code.sample if $rows[snake[:row]] != nil || do_nothing()
+    $rows[snake[:row] - 1][snake[:column]] = $rows[snake[:row] - 1][snake[:column]].bright_green if $rows[snake[:row] - 1] != nil || do_nothing()
+    $rows[snake[:row] - 13][snake[:column]] = $rows[snake[:row] - 13][snake[:column]].green if $rows[snake[:row] - 13] != nil || do_nothing()
+    $rows[snake[:row] - 2][snake[:column]] = $code.sample.bright_green if $rows[snake[:row] - 2] != nil || do_nothing()
+
+    #darken the old code
   elsif snake[:row] > 12
-    unless $rows[snake[:row]] == nil
-      $rows[snake[:row]][snake[:column]] = $code.sample
-    end
-    unless $rows[snake[:row] - 1] == nil
-      $rows[snake[:row] - 1][snake[:column]] = $rows[snake[:row] - 1][snake[:column]].bright_green
-    end
-    unless $rows[snake[:row] - 13] == nil
-      $rows[snake[:row] - 13][snake[:column]] = $rows[snake[:row] - 13][snake[:column]].green
-    end
+    $rows[snake[:row]][snake[:column]] = $code.sample if $rows[snake[:row]] != nil || do_nothing()
+    $rows[snake[:row] - 1][snake[:column]] = $rows[snake[:row] - 1][snake[:column]].bright_green if $rows[snake[:row] - 1] != nil || do_nothing()
+    $rows[snake[:row] - 13][snake[:column]] = $rows[snake[:row] - 13][snake[:column]].green if $rows[snake[:row] - 13] != nil || do_nothing()
+
+    #change the code to bright green
   elsif snake[:row] >= 0
-    unless $rows[snake[:row]] == nil
-      $rows[snake[:row]][snake[:column]] = $code.sample
-    end
-    unless $rows[snake[:row] - 1] == nil
-      $rows[snake[:row] - 1][snake[:column]] = $rows[snake[:row] - 1][snake[:column]].bright_green
-    end
+    $rows[snake[:row]][snake[:column]] = $code.sample
+    $rows[snake[:row] - 1][snake[:column]] = $rows[snake[:row] - 1][snake[:column]].bright_green
   end
+  #sets the new row to one more down, before the next loop
   snake[:row] += 1
 end
 
@@ -114,5 +116,5 @@ while true
   system("clear")
   table = TTY::Table.new(rows: $rows)
   puts table.render(:basic, column_widths: 2, alignment: [:center])
-  sleep(0.05)
+  sleep(0.03)
 end
